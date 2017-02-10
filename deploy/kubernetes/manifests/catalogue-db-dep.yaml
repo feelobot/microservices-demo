@@ -1,36 +1,52 @@
----
+--- 
 apiVersion: extensions/v1beta1
 kind: Deployment
-metadata:
-  name: catalogue-db
-  labels:
+metadata: 
+  labels: 
     name: catalogue-db
+  name: catalogue-db
   namespace: sock-shop
-spec:
+spec: 
   replicas: 1
-  template:
-    metadata:
-      labels:
+  template: 
+    metadata: 
+      labels: 
         name: catalogue-db
-    spec:
-      containers:
-      - name: catalogue-db
-        image: weaveworksdemos/catalogue-db:0.3.0
-        env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: fake_password
-          - name: MYSQL_DATABASE
-            value: socksdb
-        ports:
-        - name: mysql
-          containerPort: 3306
-        args:
-        - "--ignore-db-dir=lost+found"
-        volumeMounts:
-          # This name must match the volumes.name below.
-          - name: socks-catalogue-db
-            mountPath: /var/lib/mysql
-      volumes:
-      - name: socks-catalogue-db
-        persistentVolumeClaim:
-          claimName: socks-catalogue-db
+    spec: 
+      containers: 
+        - 
+          args: 
+            - "--ignore-db-dir=lost+found"
+          env: 
+            - 
+              name: MYSQL_ROOT_PASSWORD
+              valueFrom: 
+                secretKeyRef: 
+                  key: password
+                  name: catalogue-db
+            - 
+              name: MYSQL_DATABASE
+              value: socksdb
+          image: "weaveworksdemos/catalogue-db:0.3.0"
+          name: catalogue-db
+          ports: 
+            - 
+              containerPort: 3306
+              name: mysql
+          resources: 
+            limits: 
+              cpu: 200m
+              memory: 800Mi
+            requests: 
+              cpu: 100m
+              memory: 300Mi
+          volumeMounts: 
+            - 
+              mountPath: /var/lib/mysql
+              name: socks-catalogue-db
+      volumes: 
+        - 
+          name: socks-catalogue-db
+          persistentVolumeClaim: 
+            claimName: socks-catalogue-db
+
