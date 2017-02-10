@@ -24,13 +24,13 @@ spec:
         ports:
         - name: mysql
           containerPort: 3306
+        args:
+        - "--ignore-db-dir=lost+found"
         volumeMounts:
           # This name must match the volumes.name below.
-          - name: sock-catalogue-db
+          - name: socks-catalogue-db
             mountPath: /var/lib/mysql
       volumes:
-        - name: sock-catalogue-db
-          gcePersistentDisk:
-            # This disk must already exist.
-            pdName: sock-catalogue-db
-            fsType: ext4
+      - name: socks-catalogue-db
+        persistentVolumeClaim:
+          claimName: socks-catalogue-db
